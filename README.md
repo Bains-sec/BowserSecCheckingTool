@@ -1,5 +1,6 @@
 # Browser_data_erasure_tool
 浏览器数据清除脚本，可以检查浏览器中有没有存储特定网址的密码，然后实行数据的清除，主要是用于攻防演练中蓝队防止钓鱼获取浏览器密码。
+Analytical_tools是分析工具，在下发任务每个人执行后会有结果记录的文件夹，可以把每个人的收上来（记得以姓名命名如：李明.txt）
 # 查找浏览器是否存储特定网址的密码
 在websites.txt中填入要查找的特定网址，一般是单位内重要系统比如OA等。
 ![image](https://github.com/Bains-sec/Browser_data_erasure_tool/assets/118708882/0fbc73b0-a99d-41e3-893d-a64d19fbd568)
