@@ -1,0 +1,65 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20240612140234
+Username: BAINS\35400
+RunAs User: BAINS\35400
+Configuration Name: 
+Machine: BAINS (Microsoft Windows NT 10.0.22631.0)
+Host Application: powershell.exe -command & {set-executionpolicy Remotesigned -Scope Process; .'.\Browser_data_erasure_tool.ps1' }
+Process ID: 43540
+PSVersion: 5.1.22621.2506
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.22621.2506
+BuildVersion: 10.0.22621.2506
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is output_20240612_140234.txt
+##################################################################
+正在搜索 http://1.com、http://2.com、http://3.com、http://4.com、5.com
+未在任何浏览器中找到 http://1.com 的信息
+未在任何浏览器中找到 http://2.com 的信息
+未在任何浏览器中找到 http://3.com 的信息
+未在任何浏览器中找到 http://4.com 的信息
+未在任何浏览器中找到 5.com 的信息
+##################################################################
+##################################################################
+[+]已找到 Google Chrome 的安装路径: C:\Users\35400\AppData\Local\Google\Chrome\Application\chrome.exe
+[+]已找到 Mozilla Firefox 的安装路径: C:\Program Files\Mozilla Firefox\firefox.exe
+[+]已找到 Microsoft Edge 的安装路径: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
+[+]已找到 Internet Explorer 的安装路径: C:\Program Files\Internet Explorer\iexplore.exe
+未找到 Safari 的安装路径
+未找到 QQ Browser 的安装路径
+未找到 2345Explorer 的安装路径
+未找到 360se 的安装路径
+未找到 UCBrowser 的安装路径
+未找到 BrowserLianLuo 的安装路径
+未找到 Quark 的安装路径
+已安装的浏览器:
+1. Google Chrome
+2. Mozilla Firefox
+3. Microsoft Edge
+4. Internet Explorer
+##################################################################
+选择要清理数据的浏览器:
+1. Google Chrome
+2. Mozilla Firefox
+3. Microsoft Edge
+4. Internet Explorer
+5. Safari
+6. QQ Browser
+7. 2345Explorer
+8. 360se
+9. UCBrowser
+10. BrowserLianLuo
+11. Quark
+12. 返回上一步(请按N)
+13. 退出程序
+[+]关闭所有 Google Chrome 进程
+[+]已找到 C:\Users\35400\AppData\Local\Google\Chrome\User Data\Default
+未找到 Google Chrome 的 Cookies
+未找到 Google Chrome 的保存的账号密码文件
+##################################################################
+##################################################################

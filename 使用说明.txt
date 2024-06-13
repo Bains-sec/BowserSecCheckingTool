@@ -1,0 +1,20 @@
+双击运行Browser_data_erasure_tool.bat文件即可。工具在运行后会显示浏览器是否存储特定网址的密码，比如OA等重点系统，需要将重要系统的地址添加在websites.txt文件中（一行一个）。
+
+本工具支持的浏览器：
+1. Google Chrome
+2. Mozilla Firefox
+3. Microsoft Edge
+4. Internet Explorer
+5. Safari
+6. QQ Browser
+7. 2345Explorer
+8. 360se
+9. UCBrowser
+10. BrowserLianLuo
+11. Quark
+
+Analytical_tools是分析工具，在下发任务每个人执行后会有结果记录的文件夹，可以把每个人的收上来（记得以姓名命名如：李明.txt）
+
+注：
+1、如果显示乱码可以双击运行characterSet.reg文件，然后再重新运行bat文件。
+2、每次运行都会在该路径下生成以时间命名的txt文件，该文件存储着每次运行的脚本输出记录。
