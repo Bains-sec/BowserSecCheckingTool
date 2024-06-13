@@ -1,3 +1,116 @@
+# 在脚本开始时创建输出文件名
+$outputFileName = "output_" + (Get-Date -Format "yyyyMMdd_HHmmss") + ".txt"
+
+# 重定向所有输出到文件
+Start-Transcript -Path $outputFileName
+
+
+# 第一部分：搜索网站在浏览器中的出现情况的功能
+$websites = Get-Content -Path ".\websites.txt"
+$searchingSites = $websites -join "、"
+Write-Host "##################################################################"
+Write-Host "正在搜索 $searchingSites"
+
+$foundResults = @()
+foreach ($website in $websites) {
+    $found = $false
+    $result = [PSCustomObject]@{ 
+        Website = $website
+        FoundInBrowsers = @()
+    }
+    $browsers = @(
+        # 浏览器的配置信息
+		@{
+            Name = "Google Chrome"
+            CookiePath = "$env:APPDATA\..\Local\Google\Chrome\User Data\Default\Cookies"
+            PasswordPath = "$env:APPDATA\..\Local\Google\Chrome\User Data\Default\Login Data"
+        },
+        @{
+            Name = "Mozilla Firefox"
+			CookiePath = "$env:APPDATA\..\Roaming\Mozilla\Firefox\Profiles\myejyohz.default-release\cookies.sqlite"
+			PasswordPath = "$env:APPDATA\..\Roaming\Mozilla\Firefox\Profiles\myejyohz.default-release\logins.json"
+        },
+        @{
+            Name = "360se"
+            CookiePath = "$env:LOCALAPPDATA\..\Local\360Browser\Browser\User Data\Default\Cookies"
+            PasswordPath = "$env:LOCALAPPDATA\..\Local\360Browser\Browser\User Data\Default\Login Data"
+        },
+		@{
+            Name = "Microsoft Edge"
+            CookiePath = "$env:LOCALAPPDATA\..\Local\Microsoft\Edge\User Data\Default\Cookies"
+            PasswordPath = "$env:LOCALAPPDATA\..\Local\Microsoft\Edge\User Data\Default\Login Data"
+        },
+		@{
+            Name = "Safari"
+            CookiePath = "$env:APPDATA\..\Roaming\Apple Computer\Safari\Cookies\Cookies.binarycookies"
+            PasswordPath = "$env:APPDATA\..\Roaming\Apple Computer\Safari\Form Values\*.json"
+        },
+		@{
+            Name = "Internet Explorer"
+            CookiePath = "$env:LOCALAPPDATA\..\Local\Microsoft\Windows\INetCookies"
+            PasswordPath = "$env:LOCALAPPDATA\..\Local\Microsoft\Windows\INetCache\*.dat"
+        },
+		@{
+            Name = "2345Explorer"
+            CookiePath = "$env:LOCALAPPDATA\..\Local\2345Explorer\Browser\User Data\Default\Cookies"
+            PasswordPath = "$env:LOCALAPPDATA\..\Local\2345Explorer\Browser\User Data\Default\Login Data"
+        },
+		@{
+            Name = "QQ Browser"
+            CookiePath = "$env:LOCALAPPDATA\..\Local\Tencent\QQBrowser\User Data\Default\Cookies"
+            PasswordPath = "$env:LOCALAPPDATA\..\Local\Tencent\QQBrowser\User Data\Default\Login Data"
+        },
+		@{
+            Name = "UCBrowser"
+            CookiePath = "$env:LOCALAPPDATA\..\Local\UCBrowser\User Data\Default\Cookies"
+            PasswordPath = "$env:LOCALAPPDATA\..\Local\UCBrowser\User Data\Default\Login Data"
+        },
+		@{
+            Name = "BrowserLianLuo"
+            CookiePath = "C:\Users\$env:USERNAME\AppData\Local\BrowserLianLuo\User Data\Default\Cookies"
+            PasswordPath = "C:\Users\$env:USERNAME\AppData\Local\BrowserLianLuo\User Data\Default\Login Data"
+        },
+        @{
+            Name = "Quark"
+            CookiePath = "C:\Users\$env:USERNAME\AppData\Local\Quark\User Data\Default\Cookies"
+            PasswordPath = "C:\Users\$env:USERNAME\AppData\Local\Quark\User Data\Default\Login Data"
+        }
+      )
+
+    foreach ($browser in $browsers) {
+        $cookies = Get-Content $browser.CookiePath -ErrorAction SilentlyContinue
+        $passwords = Get-Content $browser.PasswordPath -ErrorAction SilentlyContinue
+
+        if ($cookies -match $website) {
+            $result.FoundInBrowsers += "$($browser.Name) 的cookie"
+            $found = $true
+        }
+
+        if ($passwords -match $website) {
+            $result.FoundInBrowsers += "$($browser.Name) 保存的密码文件"
+            $found = $true
+        }
+    }
+
+    if (-not $found) {
+        $result.FoundInBrowsers += "未在任何浏览器中找到"
+    }
+    $foundResults += $result
+}
+
+foreach ($result in $foundResults) {
+    if ($result.FoundInBrowsers -notcontains "未在任何浏览器中找到") {
+        Write-Host "[+]在 $($result.FoundInBrowsers -join '、') 中找到了 $($result.Website) 的信息"
+    } else {
+        Write-Host "未在任何浏览器中找到 $($result.Website) 的信息"
+    }
+}
+
+
+
+# 第二部分：搜索浏览器并执行数据删除
+
+
 # 函数：提示用户是否删除
 function PromptForDeletion($item) {
     $response = Read-Host "是否要删除 $item？ (y/n)"
@@ -276,108 +389,9 @@ function CleanBrowserData($browserName, $path) {
     } else {
         Write-Host "未找到 $path"
     }
+
 }
 
-# 第二部分：搜索网站在浏览器中的出现情况的功能
-$websites = Get-Content -Path ".\websites.txt"
-$searchingSites = $websites -join "、"
-Write-Host "##################################################################"
-Write-Host "正在搜索 $searchingSites"
-
-$foundResults = @()
-foreach ($website in $websites) {
-    $found = $false
-    $result = [PSCustomObject]@{ 
-        Website = $website
-        FoundInBrowsers = @()
-    }
-    $browsers = @(
-        # 浏览器的配置信息
-		@{
-            Name = "Google Chrome"
-            CookiePath = "$env:APPDATA\..\Local\Google\Chrome\User Data\Default\Cookies"
-            PasswordPath = "$env:APPDATA\..\Local\Google\Chrome\User Data\Default\Login Data"
-        },
-        @{
-            Name = "Mozilla Firefox"
-			CookiePath = "$env:APPDATA\..\Roaming\Mozilla\Firefox\Profiles\myejyohz.default-release\cookies.sqlite"
-			PasswordPath = "$env:APPDATA\..\Roaming\Mozilla\Firefox\Profiles\myejyohz.default-release\logins.json"
-        },
-        @{
-            Name = "360se"
-            CookiePath = "$env:LOCALAPPDATA\..\Local\360Browser\Browser\User Data\Default\Cookies"
-            PasswordPath = "$env:LOCALAPPDATA\..\Local\360Browser\Browser\User Data\Default\Login Data"
-        },
-		@{
-            Name = "Edge Browser"
-            CookiePath = "$env:LOCALAPPDATA\..\Local\Microsoft\Edge\User Data\Default\Cookies"
-            PasswordPath = "$env:LOCALAPPDATA\..\Local\Microsoft\Edge\User Data\Default\Login Data"
-        },
-		@{
-            Name = "Safari"
-            CookiePath = "$env:APPDATA\..\Roaming\Apple Computer\Safari\Cookies\Cookies.binarycookies"
-            PasswordPath = "$env:APPDATA\..\Roaming\Apple Computer\Safari\Form Values\*.json"
-        },
-		@{
-            Name = "Internet Explorer"
-            CookiePath = "$env:LOCALAPPDATA\..\Local\Microsoft\Windows\INetCookies"
-            PasswordPath = "$env:LOCALAPPDATA\..\Local\Microsoft\Windows\INetCache\*.dat"
-        },
-		@{
-            Name = "2345Explorer"
-            CookiePath = "$env:LOCALAPPDATA\..\Local\2345Explorer\Browser\User Data\Default\Cookies"
-            PasswordPath = "$env:LOCALAPPDATA\..\Local\2345Explorer\Browser\User Data\Default\Login Data"
-        },
-		@{
-            Name = "QQ Browser"
-            CookiePath = "$env:LOCALAPPDATA\..\Local\Tencent\QQBrowser\User Data\Default\Cookies"
-            PasswordPath = "$env:LOCALAPPDATA\..\Local\Tencent\QQBrowser\User Data\Default\Login Data"
-        },
-		@{
-            Name = "UCBrowser"
-            CookiePath = "$env:LOCALAPPDATA\..\Local\UCBrowser\User Data\Default\Cookies"
-            PasswordPath = "$env:LOCALAPPDATA\..\Local\UCBrowser\User Data\Default\Login Data"
-        },
-		@{
-            Name = "BrowserLianLuo"
-            CookiePath = "C:\Users\$env:USERNAME\AppData\Local\BrowserLianLuo\User Data\Default\Cookies"
-            PasswordPath = "C:\Users\$env:USERNAME\AppData\Local\BrowserLianLuo\User Data\Default\Login Data"
-        },
-        @{
-            Name = "Quark"
-            CookiePath = "C:\Users\$env:USERNAME\AppData\Local\Quark\User Data\Default\Cookies"
-            PasswordPath = "C:\Users\$env:USERNAME\AppData\Local\Quark\User Data\Default\Login Data"
-        }
-      )
-
-    foreach ($browser in $browsers) {
-        $cookies = Get-Content $browser.CookiePath -ErrorAction SilentlyContinue
-        $passwords = Get-Content $browser.PasswordPath -ErrorAction SilentlyContinue
-
-        if ($cookies -match $website) {
-            $result.FoundInBrowsers += "$($browser.Name) 的cookie"
-            $found = $true
-        }
-
-        if ($passwords -match $website) {
-            $result.FoundInBrowsers += "$($browser.Name) 保存的密码文件中"
-            $found = $true
-        }
-    }
-
-    if (-not $found) {
-        $result.FoundInBrowsers += "未在任何浏览器中找到"
-    }
-    $foundResults += $result
-}
-
-foreach ($result in $foundResults) {
-    if ($result.FoundInBrowsers -notcontains "未在任何浏览器中找到") {
-        Write-Host "[+]在 $($result.FoundInBrowsers -join '、') 中找到了 $($result.Website) 的信息"
-    } else {
-        Write-Host "未在任何浏览器中找到 $($result.Website) 的信息"
-    }
-}
 
 # 主程序
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
@@ -475,7 +489,7 @@ do {
                 }
                 "2" {
                     # 处理 Mozilla Firefox 数据清理
-                    $firefox_path = "C:\Users\$env:USERNAME\AppData\Roaming\Mozilla\Firefox\Profiles\myejyohz.default-release"
+					$firefox_path = "C:\Users\$env:USERNAME\AppData\Roaming\Mozilla\Firefox\Profiles\myejyohz.default-release"
                     CleanBrowserData "Mozilla Firefox" $firefox_path
                 }
                 "3" {
@@ -540,3 +554,7 @@ do {
         } while ($continue -eq "y")
     } while ($continue -eq "y")
 } while ($true)
+
+
+# 结束时停止输出重定向
+Stop-Transcript
